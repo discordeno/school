@@ -2,7 +2,7 @@ import { EventEmitter, setImmediate, clearImmediate } from "../../deps.ts";
 
 import RESTManager from "../rest/RESTManager.ts";
 import { DefaultOptions } from "../util/Constants.ts";
-import { flatten, mergeDefault } from "../util/Util.ts";
+import Util from "../util/Util.ts";
 
 import type { ClientOptions } from "../../typings/client_options.ts";
 
@@ -37,7 +37,7 @@ export class BaseClient extends EventEmitter {
   constructor(options = {}) {
     super();
 
-    this.options = mergeDefault(DefaultOptions, options);
+    this.options = Util.#mergeDefault(DefaultOptions, options);
     // deno-lint-ignore no-explicit-any
     this.rest = new RESTManager(this, (options as any)._tokenType);
   }
