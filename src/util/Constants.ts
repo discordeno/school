@@ -2,42 +2,6 @@ import { DJSError } from "../errors/mod.ts";
 export const VERSION = "12.5.3";
 export const browser = typeof window !== "undefined";
 
-/**
- * Options for a client.
- * @typedef {Object} ClientOptions
- * @property {number|number[]|string} [shards] ID of the shard to run, or an array of shard IDs. If not specified,
- * the client will spawn {@link ClientOptions#shardCount} shards. If set to `auto`, it will fetch the
- * recommended amount of shards from Discord and spawn that amount
- * @property {number} [shardCount=1] The total amount of shards used by all processes of this bot
- * (e.g. recommended shard count, shard count of the ShardingManager)
- * @property {number} [messageCacheMaxSize=200] Maximum number of messages to cache per channel
- * (-1 or Infinity for unlimited - don't do this without message sweeping, otherwise memory usage will climb
- * indefinitely)
- * @property {number} [messageCacheLifetime=0] How long a message should stay in the cache until it is considered
- * sweepable (in seconds, 0 for forever)
- * @property {number} [messageSweepInterval=0] How frequently to remove messages from the cache that are older than
- * the message cache lifetime (in seconds, 0 for never)
- * @property {number} [messageEditHistoryMaxSize=-1] Maximum number of previous versions to hold for an edited message
- * (-1 or Infinity for unlimited - don't do this without sweeping, otherwise memory usage may climb indefinitely.)
- * @property {boolean} [fetchAllMembers=false] Whether to cache all guild members and users upon startup, as well as
- * upon joining a guild (should be avoided whenever possible)
- * @property {DisableMentionType} [disableMentions='none'] Default value for {@link MessageOptions#disableMentions}
- * @property {MessageMentionOptions} [allowedMentions] Default value for {@link MessageOptions#allowedMentions}
- * @property {PartialType[]} [partials] Structures allowed to be partial. This means events can be emitted even when
- * they're missing all the data for a particular structure. See the "Partials" topic listed in the sidebar for some
- * important usage information, as partials require you to put checks in place when handling data.
- * @property {number} [restWsBridgeTimeout=5000] Maximum time permitted between REST responses and their
- * corresponding websocket events
- * @property {number} [restTimeOffset=500] Extra time in milliseconds to wait before continuing to make REST
- * requests (higher values will reduce rate-limiting errors on bad connections)
- * @property {number} [restRequestTimeout=15000] Time to wait before cancelling a REST request, in milliseconds
- * @property {number} [restSweepInterval=60] How frequently to delete inactive request buckets, in seconds
- * (or 0 for never)
- * @property {number} [retryLimit=1] How many times to retry on 5XX errors (Infinity for indefinite amount of retries)
- * @property {PresenceData} [presence] Presence data to use upon login
- * @property {WebsocketOptions} [ws] Options for the WebSocket
- * @property {HTTPOptions} [http] HTTP options
- */
 export const DefaultOptions = {
   shardCount: 1,
   messageCacheMaxSize: 200,
@@ -53,14 +17,6 @@ export const DefaultOptions = {
   restTimeOffset: 500,
   restSweepInterval: 60,
   presence: {},
-
-  /**
-   * WebSocket options (these are left as snake_case to match the API)
-   * @typedef {Object} WebsocketOptions
-   * @property {number} [large_threshold=50] Number of members in a guild after which offline users will no longer be
-   * sent in the initial guild member list, must be between 50 and 250
-   * @property {IntentsResolvable} [intents] Intents to enable for this connection
-   */
   ws: {
     large_threshold: 50,
     compress: false,
@@ -71,16 +27,6 @@ export const DefaultOptions = {
     },
     version: 6,
   },
-
-  /**
-   * HTTP options
-   * @typedef {Object} HTTPOptions
-   * @property {number} [version=7] API version to use
-   * @property {string} [api='https://discord.com/api'] Base url of the API
-   * @property {string} [cdn='https://cdn.discordapp.com'] Base url of the CDN
-   * @property {string} [invite='https://discord.gg'] Base url of invites
-   * @property {string} [template='https://discord.new'] Base url of templates
-   */
   http: {
     version: 7,
     api: "https://discord.com/api",
@@ -119,15 +65,6 @@ function makeImageUrl(root: string, options: { format?: string; size?: number } 
     throw new DJSError.RangeError("IMAGE_SIZE", options.size);
   return `${root}.${options.format}${options.size ? `?size=${options.size}` : ""}`;
 }
-/**
- * Options for Image URLs.
- * @typedef {Object} ImageURLOptions
- * @property {string} [format] One of `webp`, `png`, `jpg`, `jpeg`, `gif`. If no format is provided,
- * defaults to `webp`.
- * @property {boolean} [dynamic] If true, the format will dynamically change to `gif` for
- * animated avatars; the default is false.
- * @property {number} [size] One of `16`, `32`, `64`, `128`, `256`, `512`, `1024`, `2048`, `4096`
- */
 
 export const Endpoints = {
   CDN(root: string) {
@@ -163,19 +100,6 @@ export const Endpoints = {
   botGateway: "/gateway/bot",
 };
 
-/**
- * The current status of the client. Here are the available statuses:
- * * READY: 0
- * * CONNECTING: 1
- * * RECONNECTING: 2
- * * IDLE: 3
- * * NEARLY: 4
- * * DISCONNECTED: 5
- * * WAITING_FOR_GUILDS: 6
- * * IDENTIFYING: 7
- * * RESUMING: 8
- * @typedef {number} Status
- */
 export const Status = {
   READY: 0,
   CONNECTING: 1,
@@ -188,15 +112,6 @@ export const Status = {
   RESUMING: 8,
 };
 
-/**
- * The current status of a voice connection. Here are the available statuses:
- * * CONNECTED: 0
- * * CONNECTING: 1
- * * AUTHENTICATING: 2
- * * RECONNECTING: 3
- * * DISCONNECTED: 4
- * @typedef {number} VoiceStatus
- */
 export const VoiceStatus = {
   CONNECTED: 0,
   CONNECTING: 1,
@@ -299,59 +214,8 @@ export const ShardEvents = {
   ALL_READY: "allReady",
 };
 
-/**
- * The type of Structure allowed to be a partial:
- * * USER
- * * CHANNEL (only affects DMChannels)
- * * GUILD_MEMBER
- * * MESSAGE
- * * REACTION
- * <warn>Partials require you to put checks in place when handling data, read the Partials topic listed in the
- * sidebar for more information.</warn>
- * @typedef {string} PartialType
- */
 export const PartialTypes = keyMirror(["USER", "CHANNEL", "GUILD_MEMBER", "MESSAGE", "REACTION"]);
 
-/**
- * The type of a websocket message event, e.g. `MESSAGE_CREATE`. Here are the available events:
- * * READY
- * * RESUMED
- * * GUILD_CREATE
- * * GUILD_DELETE
- * * GUILD_UPDATE
- * * INVITE_CREATE
- * * INVITE_DELETE
- * * GUILD_MEMBER_ADD
- * * GUILD_MEMBER_REMOVE
- * * GUILD_MEMBER_UPDATE
- * * GUILD_MEMBERS_CHUNK
- * * GUILD_INTEGRATIONS_UPDATE
- * * GUILD_ROLE_CREATE
- * * GUILD_ROLE_DELETE
- * * GUILD_ROLE_UPDATE
- * * GUILD_BAN_ADD
- * * GUILD_BAN_REMOVE
- * * GUILD_EMOJIS_UPDATE
- * * CHANNEL_CREATE
- * * CHANNEL_DELETE
- * * CHANNEL_UPDATE
- * * CHANNEL_PINS_UPDATE
- * * MESSAGE_CREATE
- * * MESSAGE_DELETE
- * * MESSAGE_UPDATE
- * * MESSAGE_DELETE_BULK
- * * MESSAGE_REACTION_ADD
- * * MESSAGE_REACTION_REMOVE
- * * MESSAGE_REACTION_REMOVE_ALL
- * * MESSAGE_REACTION_REMOVE_EMOJI
- * * USER_UPDATE
- * * PRESENCE_UPDATE
- * * TYPING_START
- * * VOICE_STATE_UPDATE
- * * VOICE_SERVER_UPDATE
- * * WEBHOOKS_UPDATE
- * @typedef {string} WSEventType
- */
 export const WSEvents = keyMirror([
   "READY",
   "RESUMED",
@@ -391,25 +255,6 @@ export const WSEvents = keyMirror([
   "WEBHOOKS_UPDATE",
 ]);
 
-/**
- * The type of a message, e.g. `DEFAULT`. Here are the available types:
- * * DEFAULT
- * * RECIPIENT_ADD
- * * RECIPIENT_REMOVE
- * * CALL
- * * CHANNEL_NAME_CHANGE
- * * CHANNEL_ICON_CHANGE
- * * PINS_ADD
- * * GUILD_MEMBER_JOIN
- * * USER_PREMIUM_GUILD_SUBSCRIPTION
- * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_1
- * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_2
- * * USER_PREMIUM_GUILD_SUBSCRIPTION_TIER_3
- * * CHANNEL_FOLLOW_ADD
- * * GUILD_DISCOVERY_DISQUALIFIED
- * * GUILD_DISCOVERY_REQUALIFIED
- * @typedef {string} MessageType
- */
 export const MessageTypes = [
   "DEFAULT",
   "RECIPIENT_ADD",
@@ -429,17 +274,6 @@ export const MessageTypes = [
   "GUILD_DISCOVERY_REQUALIFIED",
 ];
 
-/**
- * <info>Bots cannot set a `CUSTOM_STATUS`, it is only for custom statuses received from users</info>
- * The type of an activity of a users presence, e.g. `PLAYING`. Here are the available types:
- * * PLAYING
- * * STREAMING
- * * LISTENING
- * * WATCHING
- * * CUSTOM_STATUS
- * * COMPETING
- * @typedef {string} ActivityType
- */
 export const ActivityTypes = ["PLAYING", "STREAMING", "LISTENING", "WATCHING", "CUSTOM_STATUS", "COMPETING"];
 
 export const ChannelTypes = {
@@ -489,93 +323,10 @@ export const Colors = {
   NOT_QUITE_BLACK: 0x23272a,
 };
 
-/**
- * The value set for the explicit content filter levels for a guild:
- * * DISABLED
- * * MEMBERS_WITHOUT_ROLES
- * * ALL_MEMBERS
- * @typedef {string} ExplicitContentFilterLevel
- */
 export const ExplicitContentFilterLevels = ["DISABLED", "MEMBERS_WITHOUT_ROLES", "ALL_MEMBERS"];
 
-/**
- * The value set for the verification levels for a guild:
- * * NONE
- * * LOW
- * * MEDIUM
- * * HIGH
- * * VERY_HIGH
- * @typedef {string} VerificationLevel
- */
 export const VerificationLevels = ["NONE", "LOW", "MEDIUM", "HIGH", "VERY_HIGH"];
 
-/**
- * An error encountered while performing an API request. Here are the potential errors:
- * * UNKNOWN_ACCOUNT
- * * UNKNOWN_APPLICATION
- * * UNKNOWN_CHANNEL
- * * UNKNOWN_GUILD
- * * UNKNOWN_INTEGRATION
- * * UNKNOWN_INVITE
- * * UNKNOWN_MEMBER
- * * UNKNOWN_MESSAGE
- * * UNKNOWN_OVERWRITE
- * * UNKNOWN_PROVIDER
- * * UNKNOWN_ROLE
- * * UNKNOWN_TOKEN
- * * UNKNOWN_USER
- * * UNKNOWN_EMOJI
- * * UNKNOWN_WEBHOOK
- * * UNKNOWN_BAN
- * * UNKNOWN_GUILD_TEMPLATE
- * * BOT_PROHIBITED_ENDPOINT
- * * BOT_ONLY_ENDPOINT
- * * CHANNEL_HIT_WRITE_RATELIMIT
- * * MAXIMUM_GUILDS
- * * MAXIMUM_FRIENDS
- * * MAXIMUM_PINS
- * * MAXIMUM_ROLES
- * * MAXIMUM_WEBHOOKS
- * * MAXIMUM_REACTIONS
- * * MAXIMUM_CHANNELS
- * * MAXIMUM_ATTACHMENTS
- * * MAXIMUM_INVITES
- * * GUILD_ALREADY_HAS_TEMPLATE
- * * UNAUTHORIZED
- * * ACCOUNT_VERIFICATION_REQUIRED
- * * REQUEST_ENTITY_TOO_LARGE
- * * FEATURE_TEMPORARILY_DISABLED
- * * USER_BANNED
- * * ALREADY_CROSSPOSTED
- * * MISSING_ACCESS
- * * INVALID_ACCOUNT_TYPE
- * * CANNOT_EXECUTE_ON_DM
- * * EMBED_DISABLED
- * * CANNOT_EDIT_MESSAGE_BY_OTHER
- * * CANNOT_SEND_EMPTY_MESSAGE
- * * CANNOT_MESSAGE_USER
- * * CANNOT_SEND_MESSAGES_IN_VOICE_CHANNEL
- * * CHANNEL_VERIFICATION_LEVEL_TOO_HIGH
- * * OAUTH2_APPLICATION_BOT_ABSENT
- * * MAXIMUM_OAUTH2_APPLICATIONS
- * * INVALID_OAUTH_STATE
- * * MISSING_PERMISSIONS
- * * INVALID_AUTHENTICATION_TOKEN
- * * NOTE_TOO_LONG
- * * INVALID_BULK_DELETE_QUANTITY
- * * CANNOT_PIN_MESSAGE_IN_OTHER_CHANNEL
- * * INVALID_OR_TAKEN_INVITE_CODE
- * * CANNOT_EXECUTE_ON_SYSTEM_MESSAGE
- * * INVALID_OAUTH_TOKEN
- * * BULK_DELETE_MESSAGE_TOO_OLD
- * * INVALID_FORM_BODY
- * * INVITE_ACCEPTED_TO_GUILD_NOT_CONTAINING_BOT
- * * INVALID_API_VERSION
- * * CANNOT_DELETE_COMMUNITY_REQUIRED_CHANNEL
- * * REACTION_BLOCKED
- * * RESOURCE_OVERLOADED
- * @typedef {string} APIError
- */
 export const APIErrors = {
   UNKNOWN_ACCOUNT: 10001,
   UNKNOWN_APPLICATION: 10002,
@@ -642,20 +393,8 @@ export const APIErrors = {
   RESOURCE_OVERLOADED: 130000,
 };
 
-/**
- * The value set for a guild's default message notifications, e.g. `ALL`. Here are the available types:
- * * ALL
- * * MENTIONS
- * @typedef {string} DefaultMessageNotifications
- */
 export const DefaultMessageNotifications = ["ALL", "MENTIONS"];
 
-/**
- * The value set for a team members's membership state:
- * * INVITED
- * * ACCEPTED
- * @typedef {string} MembershipStates
- */
 export const MembershipStates = [
   // They start at 1
   null,
@@ -663,12 +402,6 @@ export const MembershipStates = [
   "ACCEPTED",
 ];
 
-/**
- * The value set for a webhook's type:
- * * Incoming
- * * Channel Follower
- * @typedef {string} WebhookTypes
- */
 export const WebhookTypes = [
   // They start at 1
   null,

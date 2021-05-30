@@ -3,11 +3,6 @@
 const kCode = Symbol("code");
 const messages = new Map();
 
-/**
- * Extend an error of some sort into a DiscordjsError.
- * @param {Error} Base Base error to extend
- * @returns {DiscordjsError}
- */
 // deno-lint-ignore no-explicit-any
 function makeDiscordjsError(Base: any) {
   return class DiscordjsError extends Base {
@@ -30,12 +25,6 @@ function makeDiscordjsError(Base: any) {
   };
 }
 
-/**
- * Format the message for an error.
- * @param {string} key Error key
- * @param {Array<*>} args Arguments to pass for util format or as function args
- * @returns {string} Formatted string
- */
 function message(key: string, args: unknown[]): string {
   if (typeof key !== "string") throw new Error("Error message key must be a string");
   const msg = messages.get(key);
@@ -46,11 +35,6 @@ function message(key: string, args: unknown[]): string {
   return String(...args);
 }
 
-/**
- * Register an error code and message.
- * @param {string} sym Unique name for the error
- * @param {*} val Value of the error
- */
 function register(sym: string, val: unknown): void {
   messages.set(sym, typeof val === "function" ? val : String(val));
 }

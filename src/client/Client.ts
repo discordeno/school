@@ -28,26 +28,17 @@ import { Snowflake } from "../../typings/mod";
 import { GuildTemplateResolvable } from "../../typings/mod";
 
 export class Client extends BaseClient {
-  /** All of the Channels that the client is currently handling, mapped by their IDs - as long as sharding isn't being used, this will be every channel in every guild the bot is a member of. Note that DM channels will not be initially cached, and thus not be present in the Manager without their explicit fetching or use. */
   channels: ChannelManager;
-  /** All of the guilds the client is currently handling, mapped by their IDs - as long as sharding isn't being used, this will be every guild the bot is a member of */
   guilds: GuildManager;
-  /** Time at which the client was last regarded as being in the READY state (each time the client disconnects and successfully reconnects, this will be overwritten) */
   readyAt: Date | null = new Date();
-  /** Shard helpers for the client (only if the process was spawned from a ShardingManager) */
   shard: ShardClientUtil;
-  /** Authorization token for the logged in bot. If present, this defaults to process.env.DISCORD_TOKEN when instantiating the client. This should be kept private at all times. */
   token: string | null;
-  /** User that the client is logged in as */
   user: ClientUser | null;
-  /** All of the User objects that have been cached at any point, mapped by their IDs */
   users: UserManager;
-  /** The voice manager of the client (null in browsers) */
   voice: ClientVoiceManager;
-  /** The WebSocket manager of the client */
   ws: WebSocketManager;
   actions: ActionsManager;
-  #presence: ClientPresence;
+  presence: ClientPresence;
 
   constructor(options: ClientOptions) {
     super(Object.assign({ _tokenType: "Bot" }, options));
@@ -85,87 +76,28 @@ export class Client extends BaseClient {
       ];
     }
 
-    this.#validateOptions();
+    this.validateOptions();
 
-    /**
-     * The WebSocket manager of the client
-     * @type {WebSocketManager}
-     */
     this.ws = new WebSocketManager(this);
-
-    /**
-     * The action manager of the client
-     * @type {ActionsManager}
-     */
-    this.#actions = new ActionsManager(this);
-
-    /**
-     * The voice manager of the client (`null` in browsers)
-     * @type {?ClientVoiceManager}
-     */
+    this.actions = new ActionsManager(this);
     this.voice = !browser ? new ClientVoiceManager(this) : null;
-
-    /**
-     * Shard helpers for the client (only if the process was spawned from a {@link ShardingManager})
-     * @type {?ShardClientUtil}
-     */
     this.shard =
       !browser && Deno.env.get("SHARDING_MANAGER")
         ? ShardClientUtil.singleton(this, Deno.env.get("SHARDING_MANAGER_MODE"))
         : null;
-
-    /**
-     * All of the {@link User} objects that have been cached at any point, mapped by their IDs
-     * @type {UserManager}
-     */
     this.users = new UserManager(this);
-
-    /**
-     * All of the guilds the client is currently handling, mapped by their IDs -
-     * as long as sharding isn't being used, this will be *every* guild the bot is a member of
-     * @type {GuildManager}
-     */
     this.guilds = new GuildManager(this);
-
-    /**
-     * All of the {@link Channel}s that the client is currently handling, mapped by their IDs -
-     * as long as sharding isn't being used, this will be *every* channel in *every* guild the bot
-     * is a member of. Note that DM channels will not be initially cached, and thus not be present
-     * in the Manager without their explicit fetching or use.
-     * @type {ChannelManager}
-     */
     this.channels = new ChannelManager(this);
-
-    /**
-     * The presence of the Client
-     * @type {ClientPresence}
-     */
-    this.#presence = new Structures.get("ClientPresence")(this);
+    this.presence = new Structures.get("ClientPresence")(this);
 
     Object.defineProperty(this, "token", { writable: true });
     if (!browser && Deno.env.get("DISCORD_TOKEN")) {
-      /**
-       * Authorization token for the logged in bot.
-       * If present, this defaults to `process.env.DISCORD_TOKEN` when instantiating the client
-       * <warn>This should be kept private at all times.</warn>
-       * @type {?string}
-       */
       this.token = Deno.env.get("DISCORD_TOKEN")!;
     } else {
       this.token = null;
     }
 
-    /**
-     * User that the client is logged in as
-     * @type {?ClientUser}
-     */
     this.user = null;
-
-    /**
-     * Time at which the client was last regarded as being in the `READY` state
-     * (each time the client disconnects and successfully reconnects, this will be overwritten)
-     * @type {?Date}
-     */
     this.readyAt = null;
 
     if (this.options.messageSweepInterval && this.options.messageSweepInterval > 0) {
@@ -173,11 +105,6 @@ export class Client extends BaseClient {
     }
   }
 
-  /**
-   * All custom emojis that the client has access to, mapped by their IDs
-   * @type {GuildEmojiManager}
-   * @readonly
-   */
   get emojis(): GuildEmojiManager {
     const emojis = new GuildEmojiManager({ client: this });
     for (const guild of this.guilds.cache.values()) {
@@ -186,31 +113,14 @@ export class Client extends BaseClient {
     return emojis;
   }
 
-  /**
-   * Timestamp of the time the client was last `READY` at
-   * @type {?number}
-   * @readonly
-   */
   get readyTimestamp(): number | null {
     return this.readyAt ? this.readyAt.getTime() : null;
   }
 
-  /**
-   * How long it has been since the client last entered the `READY` state in milliseconds
-   * @type {?number}
-   * @readonly
-   */
   get uptime(): number | null {
     return this.readyTimestamp ? Date.now() - this.readyTimestamp : null;
   }
 
-  /**
-   * Logs the client in, establishing a websocket connection to Discord.
-   * @param {string} [token=this.token] Token of the account to log in with
-   * @returns {Promise<string>} Token of the account used
-   * @example
-   * client.login('my token');
-   */
   async login(token: string | null = this.token): Promise<string> {
     if (!token || typeof token !== "string") throw new Error("TOKEN_INVALID");
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, "");
@@ -223,7 +133,7 @@ export class Client extends BaseClient {
     );
 
     if (this.options.presence) {
-      this.options.ws.presence = await this.#presence._parse(this.options.presence);
+      this.options.ws.presence = await this.presence._parse(this.options.presence);
     }
 
     this.emit(Events.DEBUG, "Preparing to connect to the gateway...");
@@ -237,25 +147,12 @@ export class Client extends BaseClient {
     }
   }
 
-  /**
-   * Logs out, terminates the connection to Discord, and destroys the client.
-   * @returns {void}
-   */
   destroy() {
     super.destroy();
     this.ws.destroy();
     this.token = null;
   }
 
-  /**
-   * Obtains an invite from Discord.
-   * @param {InviteResolvable} invite Invite code or URL
-   * @returns {Promise<Invite>}
-   * @example
-   * client.fetchInvite('https://discord.gg/bRCvFy9')
-   *   .then(invite => console.log(`Obtained invite with code: ${invite.code}`))
-   *   .catch(console.error);
-   */
   fetchInvite(invite: InviteResolvable): Promise<Invite> {
     const code = DataResolver.resolveInviteCode(invite);
     return this.api
@@ -264,15 +161,6 @@ export class Client extends BaseClient {
       .then((data: Record<string, unknown>) => new Invite(this, data));
   }
 
-  /**
-   * Obtains a template from Discord.
-   * @param {GuildTemplateResolvable} template Template code or URL
-   * @returns {Promise<GuildTemplate>}
-   * @example
-   * client.fetchGuildTemplate('https://discord.new/FKvmczH2HyUf')
-   *   .then(template => console.log(`Obtained template with code: ${template.code}`))
-   *   .catch(console.error);
-   */
   fetchGuildTemplate(template: GuildTemplateResolvable): Promise<GuildTemplate> {
     const code = DataResolver.resolveGuildTemplateCode(template);
     return this.api.guilds
@@ -281,16 +169,6 @@ export class Client extends BaseClient {
       .then((data: Record<string, unknown>) => new GuildTemplate(this, data));
   }
 
-  /**
-   * Obtains a webhook from Discord.
-   * @param {Snowflake} id ID of the webhook
-   * @param {string} [token] Token for the webhook
-   * @returns {Promise<Webhook>}
-   * @example
-   * client.fetchWebhook('id', 'token')
-   *   .then(webhook => console.log(`Obtained webhook with name: ${webhook.name}`))
-   *   .catch(console.error);
-   */
   fetchWebhook(id: Snowflake, token: string): Promise<Webhook> {
     return this.api
       .webhooks(id, token)
@@ -298,14 +176,6 @@ export class Client extends BaseClient {
       .then((data: Record<string, unknown>) => new Webhook(this, data));
   }
 
-  /**
-   * Obtains the available voice regions from Discord.
-   * @returns {Promise<Collection<string, VoiceRegion>>}
-   * @example
-   * client.fetchVoiceRegions()
-   *   .then(regions => console.log(`Available regions are: ${regions.map(region => region.name).join(', ')}`))
-   *   .catch(console.error);
-   */
   fetchVoiceRegions() {
     return this.api.voice.regions.get().then((res: Record<string, unknown>[]) => {
       const regions = new Collection();
@@ -314,18 +184,6 @@ export class Client extends BaseClient {
     });
   }
 
-  /**
-   * Sweeps all text-based channels' messages and removes the ones older than the max message lifetime.
-   * If the message has been edited, the time of the edit is used rather than the time of the original message.
-   * @param {number} [lifetime=this.options.messageCacheLifetime] Messages that are older than this (in seconds)
-   * will be removed from the caches. The default is based on {@link ClientOptions#messageCacheLifetime}
-   * @returns {number} Amount of messages that were removed from the caches,
-   * or -1 if the message cache lifetime is unlimited
-   * @example
-   * // Remove all messages older than 1800 seconds from the messages cache
-   * const amount = client.sweepMessages(1800);
-   * console.log(`Successfully removed ${amount} messages from the cache.`);
-   */
   sweepMessages(lifetime = this.options.messageCacheLifetime) {
     if (typeof lifetime !== "number" || isNaN(lifetime)) {
       throw new TypeError("INVALID_TYPE", "lifetime", "number");
@@ -356,10 +214,6 @@ export class Client extends BaseClient {
     return messages;
   }
 
-  /**
-   * Obtains the OAuth Application of this bot from Discord.
-   * @returns {Promise<ClientApplication>}
-   */
   fetchApplication() {
     return this.api.oauth2
       .applications("@me")
@@ -367,11 +221,6 @@ export class Client extends BaseClient {
       .then((app) => new ClientApplication(this, app));
   }
 
-  /**
-   * Obtains a guild preview from Discord, available for all guilds the bot is in and all Discoverable guilds.
-   * @param {GuildResolvable} guild The guild to fetch the preview for
-   * @returns {Promise<GuildPreview>}
-   */
   fetchGuildPreview(guild) {
     const id = this.guilds.resolveID(guild);
     if (!id) throw new TypeError("INVALID_TYPE", "guild", "GuildResolvable");
@@ -381,17 +230,6 @@ export class Client extends BaseClient {
       .then((data) => new GuildPreview(this, data));
   }
 
-  /**
-   * Generates a link that can be used to invite the bot to a guild.
-   * @param {InviteGenerationOptions|PermissionResolvable} [options] Permissions to request
-   * @returns {Promise<string>}
-   * @example
-   * client.generateInvite({
-   *   permissions: ['SEND_MESSAGES', 'MANAGE_GUILD', 'MENTION_EVERYONE'],
-   * })
-   *   .then(link => console.log(`Generated bot invite link: ${link}`))
-   *   .catch(console.error);
-   */
   async generateInvite(options = {}) {
     const application = await this.fetchApplication();
     const query = new URLSearchParams({
@@ -416,21 +254,11 @@ export class Client extends BaseClient {
     });
   }
 
-  /**
-   * Calls {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval} on a script
-   * with the client as `this`.
-   * @param {string} script Script to eval
-   * @returns {*}
-   */
-  #eval(script: string): unknown {
+  eval(script: string): unknown {
     return eval(script);
   }
 
-  /**
-   * Validates the client options.
-   * @param {ClientOptions} [options=this.options] Options to validate
-   */
-  #validateOptions(options = this.options) {
+  validateOptions(options = this.options) {
     if (typeof options.ws.intents !== "undefined") {
       options.ws.intents = Intents.resolve(options.ws.intents);
     }

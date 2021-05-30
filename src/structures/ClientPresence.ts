@@ -1,20 +1,16 @@
-const { Presence } = require('./Presence');
-const { TypeError } = require('../errors');
-const { ActivityTypes, OPCodes } = require('../util/Constants');
+const { Presence } = require("./Presence");
+const { TypeError } = require("../errors");
+const { ActivityTypes, OPCodes } = require("../util/Constants");
 
 export class ClientPresence extends Presence {
-  /**
-   * @param {Client} client The instantiating client
-   * @param {Object} [data={}] The data for the client presence
-   */
   constructor(client, data = {}) {
-    super(client, Object.assign(data, { status: data.status || 'online', user: { id: null } }));
+    super(client, Object.assign(data, { status: data.status || "online", user: { id: null } }));
   }
 
   set(presence) {
     const packet = this._parse(presence);
     this.patch(packet);
-    if (typeof presence.shardID === 'undefined') {
+    if (typeof presence.shardID === "undefined") {
       this.client.ws.broadcast({ op: OPCodes.STATUS_UPDATE, d: packet });
     } else if (Array.isArray(presence.shardID)) {
       for (const shardID of presence.shardID) {
@@ -29,8 +25,8 @@ export class ClientPresence extends Presence {
   _parse({ status, since, afk, activities }) {
     const data = {
       activities: [],
-      afk: typeof afk === 'boolean' ? afk : false,
-      since: typeof since === 'number' && !Number.isNaN(since) ? since : null,
+      afk: typeof afk === "boolean" ? afk : false,
+      since: typeof since === "number" && !Number.isNaN(since) ? since : null,
       status: status || this.status,
     };
     if (activities === null) {
@@ -39,11 +35,11 @@ export class ClientPresence extends Presence {
     }
     if (activities && activities.length) {
       for (const [i, activity] of activities.entries()) {
-        if (typeof activity.name !== 'string') throw new TypeError('INVALID_TYPE', `activities[${i}].name`, 'string');
+        if (typeof activity.name !== "string") throw new TypeError("INVALID_TYPE", `activities[${i}].name`, "string");
         if (!activity.type) activity.type = 0;
 
         data.activities.push({
-          type: typeof activity.type === 'number' ? activity.type : ActivityTypes.indexOf(activity.type),
+          type: typeof activity.type === "number" ? activity.type : ActivityTypes.indexOf(activity.type),
           name: activity.name,
           url: activity.url,
         });
