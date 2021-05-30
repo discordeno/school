@@ -2,7 +2,7 @@ import BaseClient from "./BaseClient.ts";
 import ActionsManager from "./actions/ActionsManager.ts";
 import ClientVoiceManager from "./voice/ClientVoiceManager.ts";
 import WebSocketManager from "./websocket/WebSocketManager.ts";
-import { Error, TypeError, RangeError } from "../errors.ts";
+import { DJSError } from "../errors/mod.ts";
 import ChannelManager from "../managers/ChannelManager.ts";
 import GuildEmojiManager from "../managers/GuildEmojiManager.ts";
 import GuildManager from "../managers/GuildManager.ts";
@@ -20,12 +20,9 @@ import DataResolver from "../util/DataResolver.ts";
 import Intents from "../util/Intents.ts";
 import Permissions from "../util/Permissions.ts";
 import Structures from "../util/Structures.ts";
-import { ClientOptions } from "../typings/client_options.ts";
-import ClientUser from "./structures/ClientUser";
-import ClientPresence from "../structures/ClientPresence";
-import { InviteResolvable } from "../../typings/mod";
-import { Snowflake } from "../../typings/mod";
-import { GuildTemplateResolvable } from "../../typings/mod";
+import ClientUser from "../structures/ClientUser.ts";
+import ClientPresence from "../structures/ClientPresence.ts";
+import { ClientOptions, GuildTemplateResolvable, InviteResolvable, Snowflake } from "../../typings/mod.ts";
 
 export class Client extends BaseClient {
   channels: ChannelManager;
@@ -122,7 +119,7 @@ export class Client extends BaseClient {
   }
 
   async login(token: string | null = this.token): Promise<string> {
-    if (!token || typeof token !== "string") throw new Error("TOKEN_INVALID");
+    if (!token || typeof token !== "string") throw new DJSError.Error("TOKEN_INVALID");
     this.token = token = token.replace(/^(Bot|Bearer)\s*/i, "");
     this.emit(
       Events.DEBUG,
@@ -186,7 +183,7 @@ export class Client extends BaseClient {
 
   sweepMessages(lifetime = this.options.messageCacheLifetime) {
     if (typeof lifetime !== "number" || isNaN(lifetime)) {
-      throw new TypeError("INVALID_TYPE", "lifetime", "number");
+      throw new DJSError.TypeError("INVALID_TYPE", "lifetime", "number");
     }
     if (lifetime <= 0) {
       this.emit(Events.DEBUG, "Didn't sweep messages - lifetime is unlimited");
@@ -223,7 +220,7 @@ export class Client extends BaseClient {
 
   fetchGuildPreview(guild) {
     const id = this.guilds.resolveID(guild);
-    if (!id) throw new TypeError("INVALID_TYPE", "guild", "GuildResolvable");
+    if (!id) throw new DJSError.TypeError("INVALID_TYPE", "guild", "GuildResolvable");
     return this.api
       .guilds(id)
       .preview.get()
@@ -242,7 +239,7 @@ export class Client extends BaseClient {
     }
     if (typeof options.guild !== "undefined") {
       const guildID = this.guilds.resolveID(options.guild);
-      if (!guildID) throw new TypeError("INVALID_TYPE", "options.guild", "GuildResolvable");
+      if (!guildID) throw new DJSError.TypeError("INVALID_TYPE", "options.guild", "GuildResolvable");
       query.set("guild_id", guildID);
     }
     return `${this.options.http.api}${this.api.oauth2.authorize}?${query}`;
@@ -263,48 +260,52 @@ export class Client extends BaseClient {
       options.ws.intents = Intents.resolve(options.ws.intents);
     }
     if (typeof options.shardCount !== "number" || isNaN(options.shardCount) || options.shardCount < 1) {
-      throw new TypeError("CLIENT_INVALID_OPTION", "shardCount", "a number greater than or equal to 1");
+      throw new DJSError.TypeError("CLIENT_INVALID_OPTION", "shardCount", "a number greater than or equal to 1");
     }
     if (options.shards && !(options.shards === "auto" || Array.isArray(options.shards))) {
-      throw new TypeError("CLIENT_INVALID_OPTION", "shards", "'auto', a number or array of numbers");
+      throw new DJSError.TypeError("CLIENT_INVALID_OPTION", "shards", "'auto', a number or array of numbers");
     }
-    if (options.shards && !options.shards.length) throw new RangeError("CLIENT_INVALID_PROVIDED_SHARDS");
+    if (options.shards && !options.shards.length) throw new DJSError.RangeError("CLIENT_INVALID_PROVIDED_SHARDS");
     if (typeof options.messageCacheMaxSize !== "number" || isNaN(options.messageCacheMaxSize)) {
-      throw new TypeError("CLIENT_INVALID_OPTION", "messageCacheMaxSize", "a number");
+      throw new DJSError.TypeError("CLIENT_INVALID_OPTION", "messageCacheMaxSize", "a number");
     }
     if (typeof options.messageCacheLifetime !== "number" || isNaN(options.messageCacheLifetime)) {
-      throw new TypeError("CLIENT_INVALID_OPTION", "The messageCacheLifetime", "a number");
+      throw new DJSError.TypeError("CLIENT_INVALID_OPTION", "The messageCacheLifetime", "a number");
     }
     if (typeof options.messageSweepInterval !== "number" || isNaN(options.messageSweepInterval)) {
-      throw new TypeError("CLIENT_INVALID_OPTION", "messageSweepInterval", "a number");
+      throw new DJSError.TypeError("CLIENT_INVALID_OPTION", "messageSweepInterval", "a number");
     }
     if (
       typeof options.messageEditHistoryMaxSize !== "number" ||
       isNaN(options.messageEditHistoryMaxSize) ||
       options.messageEditHistoryMaxSize < -1
     ) {
-      throw new TypeError("CLIENT_INVALID_OPTION", "messageEditHistoryMaxSize", "a number greater than or equal to -1");
+      throw new DJSError.TypeError(
+        "CLIENT_INVALID_OPTION",
+        "messageEditHistoryMaxSize",
+        "a number greater than or equal to -1"
+      );
     }
     if (typeof options.fetchAllMembers !== "boolean") {
-      throw new TypeError("CLIENT_INVALID_OPTION", "fetchAllMembers", "a boolean");
+      throw new DJSError.TypeError("CLIENT_INVALID_OPTION", "fetchAllMembers", "a boolean");
     }
     if (typeof options.disableMentions !== "string") {
-      throw new TypeError("CLIENT_INVALID_OPTION", "disableMentions", "a string");
+      throw new DJSError.TypeError("CLIENT_INVALID_OPTION", "disableMentions", "a string");
     }
     if (!Array.isArray(options.partials)) {
-      throw new TypeError("CLIENT_INVALID_OPTION", "partials", "an Array");
+      throw new DJSError.TypeError("CLIENT_INVALID_OPTION", "partials", "an Array");
     }
     if (typeof options.restWsBridgeTimeout !== "number" || isNaN(options.restWsBridgeTimeout)) {
-      throw new TypeError("CLIENT_INVALID_OPTION", "restWsBridgeTimeout", "a number");
+      throw new DJSError.TypeError("CLIENT_INVALID_OPTION", "restWsBridgeTimeout", "a number");
     }
     if (typeof options.restRequestTimeout !== "number" || isNaN(options.restRequestTimeout)) {
-      throw new TypeError("CLIENT_INVALID_OPTION", "restRequestTimeout", "a number");
+      throw new DJSError.TypeError("CLIENT_INVALID_OPTION", "restRequestTimeout", "a number");
     }
     if (typeof options.restSweepInterval !== "number" || isNaN(options.restSweepInterval)) {
-      throw new TypeError("CLIENT_INVALID_OPTION", "restSweepInterval", "a number");
+      throw new DJSError.TypeError("CLIENT_INVALID_OPTION", "restSweepInterval", "a number");
     }
     if (typeof options.retryLimit !== "number" || isNaN(options.retryLimit)) {
-      throw new TypeError("CLIENT_INVALID_OPTION", "retryLimit", "a number");
+      throw new DJSError.TypeError("CLIENT_INVALID_OPTION", "retryLimit", "a number");
     }
   }
 }

@@ -26,49 +26,49 @@ export class BaseClient extends EventEmitter {
   }
 
   destroy() {
-    for (const t of this.#timeouts) this.clearTimeout(t);
-    for (const i of this.#intervals) this.clearInterval(i);
-    for (const i of this.#immediates) this.clearImmediate(i);
-    this.#timeouts.clear();
-    this.#intervals.clear();
-    this.#immediates.clear();
+    for (const t of this.timeouts) this.clearTimeout(t);
+    for (const i of this.intervals) this.clearInterval(i);
+    for (const i of this.immediates) this.clearImmediate(i);
+    this.timeouts.clear();
+    this.intervals.clear();
+    this.immediates.clear();
   }
 
   setTimeout(fn: (...args: unknown[]) => void, delay: number, ...args: unknown[]): number {
     const timeout = setTimeout(() => {
       fn(...args);
-      this.#timeouts.delete(timeout);
+      this.timeouts.delete(timeout);
     }, delay);
-    this.#timeouts.add(timeout);
+    this.timeouts.add(timeout);
     return timeout;
   }
 
   clearTimeout(timeout: number) {
     clearTimeout(timeout);
-    this.#timeouts.delete(timeout);
+    this.timeouts.delete(timeout);
   }
 
   // deno-lint-ignore no-explicit-any
   setInterval(fn: (...args: any[]) => void, delay: number, ...args: any[]): number {
     const interval = setInterval(fn, delay, ...args);
-    this.#intervals.add(interval);
+    this.intervals.add(interval);
     return interval;
   }
 
   clearInterval(interval: number) {
     clearInterval(interval);
-    this.#intervals.delete(interval);
+    this.intervals.delete(interval);
   }
 
   setImmediate(fn: (...args: unknown[]) => void, ...args: unknown[]): number {
     const immediate = setImmediate(fn, ...args);
-    this.#immediates.add(immediate);
+    this.immediates.add(immediate);
     return immediate;
   }
 
   clearImmediate(immediate: number) {
     clearImmediate(immediate);
-    this.#immediates.delete(immediate);
+    this.immediates.delete(immediate);
   }
 
   incrementMaxListeners() {
