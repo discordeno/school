@@ -388,7 +388,7 @@ export class Util {
     return text.replace(/```/g, "`\u200b``");
   }
 
-  static delayFor(ms: number): Promise<void> {
+  static delayFor(ms: number): Promise<unknown> {
     return new Promise((resolve) => {
       setTimeout(resolve, ms);
     });

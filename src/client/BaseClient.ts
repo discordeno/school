@@ -4,7 +4,7 @@ import RESTManager from "../rest/RESTManager.ts";
 import { DefaultOptions } from "../util/Constants.ts";
 import Util from "../util/Util.ts";
 
-import type { ClientOptions } from "../../typings/client_options.ts";
+import type { ClientOptions } from "../../typings/mod.ts";
 
 export class BaseClient extends EventEmitter {
   timeouts = new Set<number>();

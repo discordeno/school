@@ -37,7 +37,7 @@ export class Client extends BaseClient {
   actions: ActionsManager;
   presence: ClientPresence;
 
-  constructor(options: ClientOptions) {
+  constructor(options: Partial<ClientOptions>) {
     super(Object.assign({ _tokenType: "Bot" }, options));
 
     // Obtain shard details from environment or if present, worker threads
