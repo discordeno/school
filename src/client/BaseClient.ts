@@ -9,22 +9,16 @@ import type { ClientOptions } from "../../typings/client_options.ts";
 export class BaseClient extends EventEmitter {
   /**
    * Timeouts set by {@link BaseClient#setTimeout} that are still active
-   * @type {Set<Timeout>}
-   * @private
    */
   #timeouts = new Set<number>();
 
   /**
    * Intervals set by {@link BaseClient#setInterval} that are still active
-   * @type {Set<Timeout>}
-   * @private
    */
   #intervals = new Set<number>();
 
   /**
    * Intervals set by {@link BaseClient#setImmediate} that are still active
-   * @type {Set<Immediate>}
-   * @private
    */
   #immediates = new Set<number>();
 
@@ -37,7 +31,6 @@ export class BaseClient extends EventEmitter {
   /**
    * The REST manager of the client
    * @type {RESTManager}
-   * @private
    */
   rest: RESTManager;
 
@@ -53,15 +46,12 @@ export class BaseClient extends EventEmitter {
    * API shortcut
    * @type {Object}
    * @readonly
-   * @private
    */
-  get api() {
+  get #api() {
     return this.rest.api;
   }
 
-  /**
-   * Destroys all assets used by the base client.
-   */
+  /** Destroys all assets used by the base client. */
   destroy() {
     for (const t of this.#timeouts) this.clearTimeout(t);
     for (const i of this.#intervals) this.clearInterval(i);
@@ -140,22 +130,16 @@ export class BaseClient extends EventEmitter {
     this.#immediates.delete(immediate);
   }
 
-  /**
-   * Increments max listeners by one, if they are not zero.
-   * @private
-   */
-  incrementMaxListeners() {
+  /** Increments max listeners by one, if they are not zero. */
+  #incrementMaxListeners() {
     const maxListeners = this.getMaxListeners();
     if (maxListeners !== 0) {
       this.setMaxListeners(maxListeners + 1);
     }
   }
 
-  /**
-   * Decrements max listeners by one, if they are not zero.
-   * @private
-   */
-  decrementMaxListeners() {
+  /** Decrements max listeners by one, if they are not zero. */
+  #decrementMaxListeners() {
     const maxListeners = this.getMaxListeners();
     if (maxListeners !== 0) {
       this.setMaxListeners(maxListeners - 1);

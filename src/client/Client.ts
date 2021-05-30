@@ -96,9 +96,8 @@ export class Client extends BaseClient {
     /**
      * The action manager of the client
      * @type {ActionsManager}
-     * @private
      */
-    this.actions = new ActionsManager(this);
+    this.#actions = new ActionsManager(this);
 
     /**
      * The voice manager of the client (`null` in browsers)
@@ -139,7 +138,6 @@ export class Client extends BaseClient {
 
     /**
      * The presence of the Client
-     * @private
      * @type {ClientPresence}
      */
     this.#presence = new Structures.get("ClientPresence")(this);
@@ -423,7 +421,6 @@ export class Client extends BaseClient {
    * with the client as `this`.
    * @param {string} script Script to eval
    * @returns {*}
-   * @private
    */
   #eval(script: string): unknown {
     return eval(script);
@@ -432,7 +429,6 @@ export class Client extends BaseClient {
   /**
    * Validates the client options.
    * @param {ClientOptions} [options=this.options] Options to validate
-   * @private
    */
   #validateOptions(options = this.options) {
     if (typeof options.ws.intents !== "undefined") {
