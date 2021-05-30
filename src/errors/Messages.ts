@@ -66,7 +66,7 @@ const Messages = {
   REQ_RESOURCE_TYPE: "The resource must be a string, Buffer or a valid file stream.",
 
   IMAGE_FORMAT: (format: string) => `Invalid image format: ${format}`,
-  IMAGE_SIZE: (size:number) => `Invalid image size: ${size}`,
+  IMAGE_SIZE: (size: number) => `Invalid image size: ${size}`,
 
   MESSAGE_BULK_DELETE_TYPE: "The messages must be an Array, Collection, or number.",
   MESSAGE_NONCE_TYPE: "Message nonce must fit in an unsigned 64-bit integer.",
@@ -87,7 +87,8 @@ const Messages = {
   GUILD_MEMBERS_TIMEOUT: "Members didn't arrive in time.",
   GUILD_UNCACHED_ME: "The client user as a member of this guild is uncached.",
 
-  INVALID_TYPE: (name: string, expected: string, an = false) => `Supplied ${name} is not a${an ? "n" : ""} ${expected}.`,
+  INVALID_TYPE: (name: string, expected: string, an = false) =>
+    `Supplied ${name} is not a${an ? "n" : ""} ${expected}.`,
 
   WEBHOOK_MESSAGE: "The message was not sent by a webhook.",
 
