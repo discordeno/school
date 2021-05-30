@@ -65,6 +65,6 @@ export function extend(structure: keyof typeof structures, extender: Function) {
 }
 
 export default {
-    get,
-    extend
+  get,
+  extend,
 };

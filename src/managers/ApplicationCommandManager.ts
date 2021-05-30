@@ -1,7 +1,7 @@
-import BaseManager from './BaseManager.ts';
-import { DJSError } from '../errors/mod.ts';
-import ApplicationCommand from '../structures/ApplicationCommand.ts';
-import Collection from '../util/Collection.ts';
+import BaseManager from "./BaseManager.ts";
+import { DJSError } from "../errors/mod.ts";
+import ApplicationCommand from "../structures/ApplicationCommand.ts";
+import Collection from "../util/Collection.ts";
 import Client from "../client/Client.ts";
 import { Snowflake } from "../../typings/mod.ts";
 
@@ -49,14 +49,14 @@ export class ApplicationCommandManager extends BaseManager {
 
   async set(commands: ApplicationCommandData[]): Promise<Collection<Snowflake, ApplicationCommand>> {
     const data = await this.commandPath.put({
-      data: commands.map(c => this.constructor.transformCommand(c)),
+      data: commands.map((c) => this.constructor.transformCommand(c)),
     });
     return data.reduce((coll, command) => coll.set(command.id, this.add(command)), new Collection());
   }
 
   async edit(command: ApplicationCommandData, data: ApplicationCommandData): Promise<ApplicationCommand> {
     const id = this.resolveID(command);
-    if (!id) throw new DJSError.TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
+    if (!id) throw new DJSError.TypeError("INVALID_TYPE", "command", "ApplicationCommandResolvable");
 
     const patched = await this.commandPath(id).patch({ data: this.constructor.transformCommand(data) });
     return this.add(patched);
@@ -74,7 +74,7 @@ export class ApplicationCommandManager extends BaseManager {
    */
   async delete(command: ApplicationCommandResolvable): Promise<ApplicationCommand | null> {
     const id = this.resolveID(command);
-    if (!id) throw new DJSError.TypeError('INVALID_TYPE', 'command', 'ApplicationCommandResolvable');
+    if (!id) throw new DJSError.TypeError("INVALID_TYPE", "command", "ApplicationCommandResolvable");
 
     await this.commandPath(id).delete();
 
@@ -87,7 +87,7 @@ export class ApplicationCommandManager extends BaseManager {
     return {
       name: command.name,
       description: command.description,
-      options: command.options?.map(o => ApplicationCommand.transformOption(o)),
+      options: command.options?.map((o) => ApplicationCommand.transformOption(o)),
       default_permission: command.defaultPermission,
     };
   }
