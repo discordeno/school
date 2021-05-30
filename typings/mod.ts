@@ -57,3 +57,5 @@ export type ColorResolvable =
   | [number, number, number]
   | number
   | string;
+
+export type Constructable<T> = new (...args: any[]) => T;
