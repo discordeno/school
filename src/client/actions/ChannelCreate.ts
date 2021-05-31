@@ -2,6 +2,7 @@ import Action from "./Action.ts";
 import { Events } from "../../util/Constants.ts";
 
 export class ChannelCreateAction extends Action {
+  // deno-lint-ignore no-explicit-any
   handle(data: any) {
     const client = this.client;
     const existing = client.channels.cache.has(data.id);
