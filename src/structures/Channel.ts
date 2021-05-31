@@ -38,6 +38,7 @@ export class Channel extends Base {
 
   delete() {
     return this.client.api
+    // @ts-ignore okay then
       .channels(this.id)
       .delete()
       .then(() => this);

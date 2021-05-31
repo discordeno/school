@@ -31,16 +31,18 @@ export class ChannelManager extends BaseManager<Snowflake, Channel, ChannelResol
 
   remove(id: Snowflake) {
     const channel = this.cache.get(id);
-    if (channel.guild) channel.guild.channels.cache.delete(id);
+    if (channel?.guild) channel.guild.channels.cache.delete(id);
     this.cache.delete(id);
   }
 
   async fetch(id: Snowflake, cache = true, force = false) {
     if (!force) {
       const existing = this.cache.get(id);
+      // @ts-ignore okay
       if (existing && !existing.partial) return existing;
     }
 
+    // @ts-ignore okay
     const data = await this.client.api.channels(id).get();
     return this.add(data, null, cache);
   }
