@@ -17,7 +17,7 @@ class GenericAction {
     this.client = client;
   }
 
-  handle(data: unknown) {
+  handle(data: unknown, _something: unknown) {
     return data;
   }
 
@@ -46,7 +46,7 @@ class GenericAction {
     );
   }
 
-  getMessage(data: any, channel: any, cache: boolean) {
+  getMessage(data: any, channel: any, cache?: boolean) {
     const id = data.message_id || data.id;
     return (
       data.message ||
@@ -64,7 +64,7 @@ class GenericAction {
     );
   }
 
-  getReaction(data: any, message: any, user: any) {
+  getReaction(data: any, message: any, user?: any) {
     const id = data.emoji.id || decodeURIComponent(data.emoji.name);
     return this.getPayload(
       {

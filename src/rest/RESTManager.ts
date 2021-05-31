@@ -21,7 +21,6 @@ class RESTManager {
     this.globalTimeout = null;
     if (client.options.restSweepInterval && client.options.restSweepInterval > 0) {
       client.setInterval(() => {
-        // deno-lint-ignore no-explicit-any
         this.handlers.sweep((handler: any) => handler._inactive);
       }, client.options.restSweepInterval * 1000);
     }

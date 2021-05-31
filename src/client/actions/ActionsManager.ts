@@ -36,7 +36,6 @@ import Client from "../Client.ts";
 export class ActionsManager {
   client: Client;
 
-  // deno-lint-ignore no-explicit-any
   [key: string]: any;
 
   constructor(client: Client) {
@@ -77,7 +76,6 @@ export class ActionsManager {
     this.register(TypingStart);
   }
 
-  // deno-lint-ignore no-explicit-any
   register(Action: any) {
     this[Action.name.replace(/Action$/, "")] = new Action(this.client);
   }

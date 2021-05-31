@@ -322,9 +322,7 @@ export class Collection<K, V> extends Map<K, V> {
 
   toJSON() {
     return this.map((e) =>
-      // deno-lint-ignore no-explicit-any
       typeof (e as any).toJSON === "function"
-        ? // deno-lint-ignore no-explicit-any
           (e as any).toJSON()
         : // @ts-ignore whatever
           Util.flatten(e)

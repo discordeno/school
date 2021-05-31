@@ -144,7 +144,6 @@ export class ShardingManager extends EventEmitter {
     return this._performOnShards("fetchClientValue", [prop], shard);
   }
 
-  // deno-lint-ignore no-explicit-any
   _performOnShards(method: string, args: any[], shard: number): Promise<any> {
     if (this.shards.size === 0) return Promise.reject(new DJSError.Error("SHARDING_NO_SHARDS"));
 

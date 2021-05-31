@@ -270,7 +270,6 @@ export class Util {
     return color as number;
   }
 
-  // deno-lint-ignore no-explicit-any
   static discordSort(collection: Collection<string, any>) {
     return collection.sorted(
       (a, b) =>

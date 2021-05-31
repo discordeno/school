@@ -19,7 +19,6 @@ export class BaseClient extends EventEmitter {
     // @ts-ignore afsdc
     this.options = Util.mergeDefault(DefaultOptions, options);
     // @ts-ignore asdf
-    // deno-lint-ignore no-explicit-any
     this.rest = new RESTManager(this, (options as any)._tokenType);
   }
 
@@ -50,7 +49,6 @@ export class BaseClient extends EventEmitter {
     this.timeouts.delete(timeout);
   }
 
-  // deno-lint-ignore no-explicit-any
   setInterval(fn: (...args: any[]) => void, delay: number, ...args: any[]): number {
     const interval = setInterval(fn, delay, ...args);
     this.intervals.add(interval);

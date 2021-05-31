@@ -11,7 +11,6 @@ export class BaseManager<K, Holds, R> {
 
   constructor(
     client: Client,
-    // deno-lint-ignore no-explicit-any
     iterable: Iterable<any>,
     holds: Constructable<Holds>,
     cacheType = Collection,
@@ -27,7 +26,6 @@ export class BaseManager<K, Holds, R> {
     if (iterable) for (const i of iterable) this.add(i);
   }
 
-  // deno-lint-ignore no-explicit-any
   add(data: any, cache?: boolean, info: { id?: K; extras: any[] } = { extras: [] }): Holds {
     const existing = this.cache.get(info?.id || data.id);
     // @ts-ignore umm no idea

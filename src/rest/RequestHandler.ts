@@ -5,7 +5,6 @@ import { Events, browser } from "../util/Constants.ts";
 import Util from "../util/Util.ts";
 import RESTManager from "./RESTManager.ts";
 
-// deno-lint-ignore no-explicit-any
 function parseResponse(res: any) {
   if (res.headers.get("content-type")?.startsWith("application/json")) return res.json();
   if (browser) return res.blob();
@@ -54,7 +53,6 @@ class RequestHandler {
     return this.queue.remaining === 0 && !this.limited;
   }
 
-  // deno-lint-ignore no-explicit-any
   async execute(request: any): Promise<unknown> {
     if (this.limited) {
       const timeout = this.reset + this.manager.client.options.restTimeOffset! - Date.now();

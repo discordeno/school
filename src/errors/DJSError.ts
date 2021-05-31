@@ -3,7 +3,6 @@
 const kCode = Symbol("code");
 const messages = new Map();
 
-// deno-lint-ignore no-explicit-any
 function makeDiscordjsError(Base: any) {
   return class DiscordjsError extends Base {
     constructor(key: string, ...args: unknown[]) {

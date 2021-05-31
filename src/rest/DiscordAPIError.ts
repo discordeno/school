@@ -17,7 +17,6 @@ class DiscordAPIError extends Error {
     this.httpStatus = status;
   }
 
-  // deno-lint-ignore no-explicit-any
   static flattenErrors(obj: Record<string, any>, key = "") {
     let messages: string[] = [];
 

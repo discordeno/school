@@ -43,7 +43,6 @@ export function get(structure: keyof typeof structures) {
   throw new TypeError(`"structure" argument must be a string (received ${typeof structure})`);
 }
 
-// deno-lint-ignore ban-types
 export function extend(structure: keyof typeof structures, extender: Function) {
   const extended = extender(structures[structure]);
   if (typeof extended !== "function") {

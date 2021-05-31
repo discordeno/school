@@ -4,7 +4,6 @@ import { Events } from "../../util/Constants.ts";
 import Client from "../Client.ts";
 
 export class ChannelDeleteAction extends Action {
-  // deno-lint-ignore no-explicit-any
   deleted: Map<any, any>;
 
   constructor(client: Client) {
@@ -12,7 +11,6 @@ export class ChannelDeleteAction extends Action {
     this.deleted = new Map();
   }
 
-  // deno-lint-ignore no-explicit-any
   handle(data: any) {
     const client = this.client;
     const channel = client.channels.cache.get(data.id);
