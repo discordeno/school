@@ -9,7 +9,7 @@ export class ChannelManager extends BaseManager<Snowflake, Channel, ChannelResol
     super(client, iterable, Channel);
   }
 
-  add(data, guild: Guild, cache = true) {
+  add(data, guild?: Guild, cache = true) {
     const existing = this.cache.get(data.id);
     if (existing) {
       if (existing._patch && cache) existing._patch(data);

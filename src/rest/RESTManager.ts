@@ -32,6 +32,7 @@ class RESTManager {
   }
 
   getAuth() {
+    // @ts-ignore ok
     const token = this.client.token || this.client.accessToken;
     if (token) return `${this.tokenPrefix} ${token}`;
     throw new DJSError.Error("TOKEN_MISSING");
@@ -42,14 +43,18 @@ class RESTManager {
   }
 
   request(method: string, url: string, options = {}) {
+    // @ts-ignore okayy
     const apiRequest = new APIRequest(this, method, url, options);
+    // @ts-ignore okayy
     let handler = this.handlers.get(apiRequest.route);
 
     if (!handler) {
       handler = new RequestHandler(this);
+      // @ts-ignore okayy
       this.handlers.set(apiRequest.route, handler);
     }
 
+    // @ts-ignore okayy
     return handler.push(apiRequest);
   }
 

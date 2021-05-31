@@ -16,7 +16,9 @@ export class BaseClient extends EventEmitter {
   constructor(options = {}) {
     super();
 
+    // @ts-ignore afsdc
     this.options = Util.mergeDefault(DefaultOptions, options);
+    // @ts-ignore asdf
     // deno-lint-ignore no-explicit-any
     this.rest = new RESTManager(this, (options as any)._tokenType);
   }
