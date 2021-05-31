@@ -1,13 +1,13 @@
-import Action from './Action.ts';
-import { Events } from '../../util/Constants.ts';
-import Structures from '../../util/Structures.ts';
+import Action from "./Action.ts";
+import { Events } from "../../util/Constants.ts";
+import Structures from "../../util/Structures.ts";
 
 export class VoiceStateUpdate extends Action {
   handle(data: any) {
     const client = this.client;
     const guild = client.guilds.cache.get(data.guild_id);
     if (guild) {
-      const VoiceState = Structures.get('VoiceState');
+      const VoiceState = Structures.get("VoiceState");
       // Update the state
       const oldState = guild.voiceStates.cache.has(data.user_id)
         ? guild.voiceStates.cache.get(data.user_id)._clone()
@@ -24,7 +24,7 @@ export class VoiceStateUpdate extends Action {
       }
 
       if (member && member.user.id === client.user!.id) {
-        client.emit('debug', `[VOICE] received voice state update: ${JSON.stringify(data)}`);
+        client.emit("debug", `[VOICE] received voice state update: ${JSON.stringify(data)}`);
         client.voice.onVoiceStateUpdate(data);
       }
 

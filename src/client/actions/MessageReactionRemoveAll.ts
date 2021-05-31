@@ -1,10 +1,10 @@
-import Action from './Action.ts';
-import { Events } from '../../util/Constants.ts';
+import Action from "./Action.ts";
+import { Events } from "../../util/Constants.ts";
 
 class MessageReactionRemoveAll extends Action {
   handle(data: any) {
     const channel = this.getChannel(data);
-    if (!channel || channel.type === 'voice') return false;
+    if (!channel || channel.type === "voice") return false;
 
     const message = this.getMessage(data, channel);
     if (!message) return false;

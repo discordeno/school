@@ -1,5 +1,5 @@
-import Action from './Action.ts';
-import { Events } from '../../util/Constants.ts';
+import Action from "./Action.ts";
+import { Events } from "../../util/Constants.ts";
 
 export class PresenceUpdateAction extends Action {
   handle(data: any) {
@@ -17,7 +17,7 @@ export class PresenceUpdateAction extends Action {
     let oldPresence = guild.presences.cache.get(user.id);
     if (oldPresence) oldPresence = oldPresence._clone();
     let member = guild.members.cache.get(user.id);
-    if (!member && data.status !== 'offline') {
+    if (!member && data.status !== "offline") {
       member = guild.members.add({
         user,
         roles: data.roles,

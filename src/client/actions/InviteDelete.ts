@@ -1,6 +1,6 @@
-import Action from './Action.ts';
-import Invite from '../../structures/Invite.ts';
-import { Events } from '../../util/Constants.ts';
+import Action from "./Action.ts";
+import Invite from "../../structures/Invite.ts";
+import { Events } from "../../util/Constants.ts";
 
 export class InviteDeleteAction extends Action {
   handle(data: any) {

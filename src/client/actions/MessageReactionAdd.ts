@@ -1,6 +1,6 @@
-import Action from './Action.ts';
-import { Events } from '../../util/Constants.ts';
-import { PartialTypes } from '../../util/Constants.ts';
+import Action from "./Action.ts";
+import { Events } from "../../util/Constants.ts";
+import { PartialTypes } from "../../util/Constants.ts";
 
 class MessageReactionAdd extends Action {
   handle(data: any) {
@@ -10,7 +10,7 @@ class MessageReactionAdd extends Action {
     if (!user) return false;
 
     const channel = this.getChannel(data);
-    if (!channel || channel.type === 'voice') return false;
+    if (!channel || channel.type === "voice") return false;
 
     const message = this.getMessage(data, channel);
     if (!message) return false;

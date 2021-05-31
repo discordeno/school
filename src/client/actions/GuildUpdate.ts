@@ -1,5 +1,5 @@
-import Action from './Action.ts';
-import { Events } from '../../util/Constants.ts';
+import Action from "./Action.ts";
+import { Events } from "../../util/Constants.ts";
 
 export class GuildUpdateAction extends Action {
   handle(data: any) {

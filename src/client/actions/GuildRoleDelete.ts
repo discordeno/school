@@ -1,5 +1,5 @@
-import Action from './Action.ts';
-import { Events } from '../../util/Constants.ts';
+import Action from "./Action.ts";
+import { Events } from "../../util/Constants.ts";
 
 export class GuildRoleDeleteAction extends Action {
   handle(data: any) {
