@@ -1,3 +1,4 @@
+import { ImageFormatOptions } from "../../typings/mod.ts";
 import { DJSError } from "../errors/mod.ts";
 export const VERSION = "12.5.3";
 export const browser = typeof window !== "undefined";
@@ -52,11 +53,6 @@ export const WSCodes = {
 const AllowedImageFormats = ["webp", "png", "jpg", "jpeg", "gif"];
 
 const AllowedImageSizes = Array.from({ length: 9 }, (_e, i) => 2 ** (i + 4));
-
-interface ImageFormatOptions {
-  format?: string;
-  size?: number;
-}
 
 function makeImageUrl(root: string, options: { format?: string; size?: number } = { format: "webp" }) {
   if (options.format && !AllowedImageFormats.includes(options.format))

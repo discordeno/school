@@ -1,3 +1,5 @@
+import Channel from "../src/structures/Channel.ts";
+
 export interface ClientOptions {
   shards: number | number[] | "auto";
   shardCount: number;
@@ -59,3 +61,20 @@ export type ColorResolvable =
   | string;
 
 export type Constructable<T> = new (...args: any[]) => T;
+
+export interface ShardingManagerOptions {
+  totalShards?: number | "auto";
+  shardList?: number[] | "auto";
+  mode?: ShardingManagerMode;
+  respawn?: boolean;
+  shardArgs?: string[];
+  token?: string;
+  execArgv?: string[];
+}
+
+export type ShardingManagerMode = "process" | "worker";
+export type ChannelResolvable = Channel | Snowflake;
+export interface ImageFormatOptions {
+  format?: string;
+  size?: number;
+}

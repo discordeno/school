@@ -3,6 +3,7 @@ import { Colors, DefaultOptions, Endpoints } from "./Constants.ts";
 import { DJSError } from "../errors/mod.ts";
 import { ColorResolvable, Snowflake, StringResolvable } from "../../typings/mod.ts";
 import Collection from "./Collection.ts";
+import Channel from "../structures/Channel.ts";
 
 const has = (o: unknown, k: PropertyKey) => Object.prototype.hasOwnProperty.call(o, k);
 const isObject = (d: unknown) => typeof d === "object" && d !== null;
