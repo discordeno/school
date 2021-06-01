@@ -78,3 +78,12 @@ export interface ImageFormatOptions {
   format?: string;
   size?: number;
 }
+export type GuildChannelResolvable = Snowflake | GuildChannel;
+export type EmojiIdentifierResolvable = string | EmojiResolvable;
+export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji;
+export type RoleResolvable = Role | string;
+export type GuildMemberResolvable = GuildMember | UserResolvable;  
+export type GuildResolvable = Guild | GuildChannel | GuildMember | GuildEmoji | Invite | Role | Snowflake;
+export type UserResolvable = User | Snowflake | Message | GuildMember;
+export type VerificationLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
+export type VoiceStatus = number;

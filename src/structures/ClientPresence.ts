@@ -1,6 +1,6 @@
 const { Presence } = require("./Presence");
-const { TypeError } = require("../errors");
-const { ActivityTypes, OPCodes } = require("../util/Constants");
+import { DJSError } from "../errors/mod.ts";
+const { ActivityTypes, OPCodes } from "../util/Constants.ts";
 
 export class ClientPresence extends Presence {
   constructor(client, data = {}) {
@@ -35,7 +35,7 @@ export class ClientPresence extends Presence {
     }
     if (activities && activities.length) {
       for (const [i, activity] of activities.entries()) {
-        if (typeof activity.name !== "string") throw new TypeError("INVALID_TYPE", `activities[${i}].name`, "string");
+        if (typeof activity.name !== "string") throw new DJSError.TypeError("INVALID_TYPE", `activities[${i}].name`, "string");
         if (!activity.type) activity.type = 0;
 
         data.activities.push({
