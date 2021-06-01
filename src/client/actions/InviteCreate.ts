@@ -1,6 +1,6 @@
-import Action from './Action.ts';
-import Invite from '../../structures/Invite.ts';
-import { Events } from '../../util/Constants.ts';
+import Action from "./Action.ts";
+import Invite from "../../structures/Invite.ts";
+import { Events } from "../../util/Constants.ts";
 
 export class InviteCreateAction extends Action {
   handle(data: any) {
@@ -11,7 +11,7 @@ export class InviteCreateAction extends Action {
 
     const inviteData = Object.assign(data, { channel, guild });
     const invite = new Invite(client, inviteData);
-    
+
     client.emit(Events.INVITE_CREATE, invite);
     return { invite };
   }
