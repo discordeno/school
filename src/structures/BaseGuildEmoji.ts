@@ -1,5 +1,5 @@
 import Client from "../client/Client.ts";
-import Emoji from './Emoji.ts';
+import Emoji from "./Emoji.ts";
 import { Guild } from "./Guild.ts";
 
 export class BaseGuildEmoji extends Emoji {
@@ -16,7 +16,7 @@ export class BaseGuildEmoji extends Emoji {
     this.managed = null;
     this.available = null;
 
-    Object.defineProperty(this, '_roles', { value: [], writable: true });
+    Object.defineProperty(this, "_roles", { value: [], writable: true });
 
     this._patch(data);
   }
@@ -24,15 +24,15 @@ export class BaseGuildEmoji extends Emoji {
   _patch(data: any) {
     if (data.name) this.name = data.name;
 
-    if (typeof data.require_colons !== 'undefined') {
+    if (typeof data.require_colons !== "undefined") {
       this.requiresColons = data.require_colons;
     }
 
-    if (typeof data.managed !== 'undefined') {
+    if (typeof data.managed !== "undefined") {
       this.managed = data.managed;
     }
 
-    if (typeof data.available !== 'undefined') {
+    if (typeof data.available !== "undefined") {
       this.available = data.available;
     }
 

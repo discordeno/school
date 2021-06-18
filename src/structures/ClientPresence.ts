@@ -35,7 +35,8 @@ export class ClientPresence extends Presence {
     }
     if (activities && activities.length) {
       for (const [i, activity] of activities.entries()) {
-        if (typeof activity.name !== "string") throw new DJSError.TypeError("INVALID_TYPE", `activities[${i}].name`, "string");
+        if (typeof activity.name !== "string")
+          throw new DJSError.TypeError("INVALID_TYPE", `activities[${i}].name`, "string");
         if (!activity.type) activity.type = 0;
 
         data.activities.push({

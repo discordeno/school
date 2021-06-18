@@ -1,14 +1,14 @@
 import { PermissionResolvable, PermissionString } from "../../typings/mod.ts";
-import BitField from './BitField.ts';
+import BitField from "./BitField.ts";
 
 export class Permissions extends BitField<PermissionString> {
   any(permission: PermissionResolvable, checkAdmin = true) {
-      // @ts-ignore
+    // @ts-ignore
     return (checkAdmin && super.has(this.constructor.FLAGS.ADMINISTRATOR)) || super.any(permission);
   }
 
   has(permission: PermissionResolvable, checkAdmin = true) {
-      // @ts-ignore
+    // @ts-ignore
     return (checkAdmin && super.has(this.constructor.FLAGS.ADMINISTRATOR)) || super.has(permission);
   }
 }
