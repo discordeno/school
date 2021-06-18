@@ -1,4 +1,7 @@
 import Channel from "../src/structures/Channel.ts";
+import { Guild } from "../src/structures/Guild.ts";
+import { BitField } from "../src/util/BitField.ts";
+import Collection from "../src/util/Collection.ts";
 
 export interface ClientOptions {
   shards: number | number[] | "auto";
@@ -82,8 +85,51 @@ export type GuildChannelResolvable = Snowflake | GuildChannel;
 export type EmojiIdentifierResolvable = string | EmojiResolvable;
 export type EmojiResolvable = Snowflake | GuildEmoji | ReactionEmoji;
 export type RoleResolvable = Role | string;
-export type GuildMemberResolvable = GuildMember | UserResolvable;  
+export type GuildMemberResolvable = GuildMember | UserResolvable;
 export type GuildResolvable = Guild | GuildChannel | GuildMember | GuildEmoji | Invite | Role | Snowflake;
 export type UserResolvable = User | Snowflake | Message | GuildMember;
-export type VerificationLevel = 'NONE' | 'LOW' | 'MEDIUM' | 'HIGH' | 'VERY_HIGH';
+export type PermissionResolvable = BitFieldResolvable<PermissionString>;
+export type VerificationLevel = "NONE" | "LOW" | "MEDIUM" | "HIGH" | "VERY_HIGH";
 export type VoiceStatus = number;
+export interface GuildEmojiEditData {
+  name?: string;
+  roles?: Collection<Snowflake, Role> | RoleResolvable[];
+}
+export type BitFieldResolvable<T extends string> =
+  | RecursiveReadonlyArray<T | number | Readonly<BitField<T>>>
+  | T
+  | number
+  | Readonly<BitField<T>>;
+export type RecursiveReadonlyArray<T> = ReadonlyArray<T | RecursiveReadonlyArray<T>>;
+export type PermissionString =
+  | "CREATE_INSTANT_INVITE"
+  | "KICK_MEMBERS"
+  | "BAN_MEMBERS"
+  | "ADMINISTRATOR"
+  | "MANAGE_CHANNELS"
+  | "MANAGE_GUILD"
+  | "ADD_REACTIONS"
+  | "VIEW_AUDIT_LOG"
+  | "PRIORITY_SPEAKER"
+  | "STREAM"
+  | "VIEW_CHANNEL"
+  | "SEND_MESSAGES"
+  | "SEND_TTS_MESSAGES"
+  | "MANAGE_MESSAGES"
+  | "EMBED_LINKS"
+  | "ATTACH_FILES"
+  | "READ_MESSAGE_HISTORY"
+  | "MENTION_EVERYONE"
+  | "USE_EXTERNAL_EMOJIS"
+  | "VIEW_GUILD_INSIGHTS"
+  | "CONNECT"
+  | "SPEAK"
+  | "MUTE_MEMBERS"
+  | "DEAFEN_MEMBERS"
+  | "MOVE_MEMBERS"
+  | "USE_VAD"
+  | "CHANGE_NICKNAME"
+  | "MANAGE_NICKNAMES"
+  | "MANAGE_ROLES"
+  | "MANAGE_WEBHOOKS"
+  | "MANAGE_EMOJIS";

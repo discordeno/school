@@ -1,6 +1,6 @@
 const { Presence } = require("./Presence");
 import { DJSError } from "../errors/mod.ts";
-const { ActivityTypes, OPCodes } from "../util/Constants.ts";
+import { ActivityTypes, OPCodes } from "../util/Constants.ts";
 
 export class ClientPresence extends Presence {
   constructor(client, data = {}) {

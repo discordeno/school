@@ -323,7 +323,7 @@ export class Collection<K, V> extends Map<K, V> {
   toJSON() {
     return this.map((e) =>
       typeof (e as any).toJSON === "function"
-          (e as any).toJSON()
+        ? (e as any).toJSON()
         : // @ts-ignore whatever
           Util.flatten(e)
     );
